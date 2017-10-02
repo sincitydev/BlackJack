@@ -28,6 +28,36 @@ class GameTableViewController: UIViewController {
 
         moneyLabel.text = getMoneyString(forInt: playersMoney)
         
+        let hitGetstureRecgonizer = UISwipeGestureRecognizer(target: self, action: #selector(hit))
+        
+        let stayGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(stay))
+        
+        stayGestureRecognizer.numberOfTapsRequired = 2
+        
+        hitGetstureRecgonizer.direction = .down
+        
+        view.addGestureRecognizer(hitGetstureRecgonizer)
+        view.addGestureRecognizer(stayGestureRecognizer)
+        
+    }
+    
+    @objc func hit(sender: UISwipeGestureRecognizer) {
+        
+        if playersHand.count == 0 {
+            print("Need to deal before I can hit you")
+        } else {
+            print("Hit me")
+        blackjackGame.hitPlayer()
+        }
+    }
+    
+    @objc func stay(sender: UITapGestureRecognizer) {
+        
+        if dealersHand.count == 0 {
+            print("Need to deal before you can stay")
+        } else {
+            print("Stay")
+        }
     }
 
     @IBAction func dealButtonPressed(_ sender: Any) {
