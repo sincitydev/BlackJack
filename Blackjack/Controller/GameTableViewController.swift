@@ -10,105 +10,107 @@ import UIKit
 
 class GameTableViewController: UIViewController {
 
+    let userDefaults = UserDefaults.standard
+    var playersMoney = 500
+    var blackjackGame = BlackjackBrain()
+    
     @IBOutlet weak var bettingSlider: UISlider!
     @IBOutlet weak var bettingLabel: UILabel!
     @IBOutlet weak var moneyLabel: UILabel!
     @IBOutlet weak var dealButton: UIButton!
-    
     @IBOutlet weak var dealersHandLabel: UILabel!
-    
     @IBOutlet weak var playersHandLabel: UILabel!
     
-    let userDefaults = UserDefaults.standard
-    
-    var playersMoney = 500
-    var blackjackGame = BlackjackBrain()
-    var playersHand = [card]()
-    var dealersHand = [card]()
-    
-    
+    var doubleTapGesture: UITapGestureRecognizer!
+    var swipeRightGesture: UISwipeGestureRecognizer!
+    var swipeDownGesture: UISwipeGestureRecognizer!
     
     var playerCardViews = [UIImageView]()
     var dealersCardViews = [UIImageView]()
     
+    var playersHand: [card] {
+        get {
+            return blackjackGame.getPlayersHand()
+        }
+    }
+    var dealersHand: [card] {
+        get {
+            return blackjackGame.getDealersHand()
+        }
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(stay(_:)))
+        swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(hit(_:)))
+        swipeRightGesture = UISwipeGestureRecognizer(target: self, action: #selector(clear(_:)))
+        
+        doubleTapGesture.numberOfTapsRequired = 2
+        swipeDownGesture.direction = .down
+        swipeRightGesture.direction = .right
+        
+        self.view.addGestureRecognizer(doubleTapGesture)
+        self.view.addGestureRecognizer(swipeDownGesture)
+        self.view.addGestureRecognizer(swipeRightGesture)
+    
+        setupView()
+    }
+    
+    func setupView() {
         playersHandLabel.isHidden = true
         dealersHandLabel.isHidden = true
+        doubleTapGesture.isEnabled = false
+        swipeDownGesture.isEnabled = false
+        swipeRightGesture.isEnabled = false
         
         moneyLabel.text = getMoneyString(forInt: playersMoney)
         bettingSlider.value = bettingSlider.minimumValue
         bettingLabel.text = "Betting: $\(bettingSlider.value)"
         bettingSlider.maximumValue = Float(playersMoney)
-        
-        let hitGetstureRecgonizer = UISwipeGestureRecognizer(target: self, action: #selector(hit(sender:)))
-        
-        let stayGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(stay(sender:)))
-        
-        let endGestureRocognnizer = UISwipeGestureRecognizer(target: self, action: #selector(clear(sender:)))
-        
-        stayGestureRecognizer.numberOfTapsRequired = 2
-        
-        hitGetstureRecgonizer.direction = .down
-        endGestureRocognnizer.direction = .right
-        
-        
-        view.addGestureRecognizer(hitGetstureRecgonizer)
-        view.addGestureRecognizer(stayGestureRecognizer)
-        view.addGestureRecognizer(endGestureRocognnizer)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         let instructionsVC = UIStoryboard.init(name: "Instructions", bundle: nil).instantiateInitialViewController() as! InstructionsViewController
         
-        if !userDefaults.bool(forKey: Literals.visitedBefore)
-        {
+        if !userDefaults.bool(forKey: Literals.visitedBefore) {
             self.present(instructionsVC, animated: true, completion: nil)
         }
     }
     
-    @objc func hit(sender: UISwipeGestureRecognizer) {
+    @objc func hit(_ sender: UISwipeGestureRecognizer) {
+        // Adding the new card to screen
+        blackjackGame.hitPlayer()
+        let cardView = createCardView(forCard: playersHand[playersHand.count - 1])
+        playerCardViews.append(cardView)
+        self.view.addSubview(cardView)
         
-        if playersHand.count == 0 {
-            print("Need to deal before I can hit you")
-        } else {
-            blackjackGame.hitPlayer()
-            playersHand = blackjackGame.getPlayersHand()
-            
-            // Adding the new card to screen
-            let cardView = createCardView(forCard: playersHand[playersHand.count - 1])
-            playerCardViews.append(cardView)
-            self.view.addSubview(cardView)
-            hitAnimation(forPlayer: true, cardViews: playerCardViews)
-        }
+        hitAnimation(forPlayer: true, cardViews: playerCardViews)
     }
     
-    @objc func stay(sender: UITapGestureRecognizer) {
+    @objc func stay(_ sender: UITapGestureRecognizer) {
+        doubleTapGesture.isEnabled = false
+        swipeDownGesture.isEnabled = false
+        swipeRightGesture.isEnabled = true
         
-        if dealersHand.count == 0 {
-            print("Need to deal before you can stay")
-        } else {
-            print("Stay")
-            
-            // MARK: - CHANGE THIS LATER SO THAT BETTING AND WIN CONDITION CAN TAKE PLACE
-            dealButton.isEnabled = true
-            dealersCardViews[1].image = getUIImage(forCard: dealersHand[1])
-            
-            blackjackGame.dealerPlays(scoreToBeat: blackjackGame.getBestValue(ofHand: playersHand))
-            dealersHand = blackjackGame.getDealersHand()
-            
-            for i in 2..<dealersHand.count {
-                dealersCardViews.append(createCardView(forCard: dealersHand[i]))
-                self.view.addSubview(dealersCardViews[i])
-            }
-            
-            hitAnimation(forPlayer: false, cardViews: dealersCardViews)
+        
+        // MARK: - CHANGE THIS LATER SO THAT BETTING AND WIN CONDITION CAN TAKE PLACE
+        
+        // Flips the hidden card
+        dealersCardViews[1].image = getUIImage(forCard: dealersHand[1])
+        
+        blackjackGame.dealerPlays(scoreToBeat: blackjackGame.getBestValue(ofHand: playersHand))
+        
+        for i in 2..<dealersHand.count {
+            dealersCardViews.append(createCardView(forCard: dealersHand[i]))
+            self.view.addSubview(dealersCardViews[i])
         }
+        
+        hitAnimation(forPlayer: false, cardViews: dealersCardViews)
     }
     
-    @objc func clear(sender: UISwipeGestureRecognizer) {
+    @objc func clear(_ sender: UISwipeGestureRecognizer) {
         clearAnimation(playerCardViews: playerCardViews, dealerCardViews: dealersCardViews)
         
         dealButton.isHidden = false
@@ -117,6 +119,8 @@ class GameTableViewController: UIViewController {
         bettingLabel.isHidden = false
         playersHandLabel.isHidden = true
         dealersHandLabel.isHidden = true
+        
+        swipeRightGesture.isEnabled = false
     }
     
     @IBAction func sliderAction(_ sender: UISlider) {
@@ -134,6 +138,8 @@ class GameTableViewController: UIViewController {
         bettingLabel.isHidden = true
         dealersHandLabel.isHidden = false
         playersHandLabel.isHidden = false
+        doubleTapGesture.isEnabled = true
+        swipeDownGesture.isEnabled = true
         
         
         // MARK: - WORKOUT BETTING HERE
@@ -141,14 +147,9 @@ class GameTableViewController: UIViewController {
 //        bettingSlider.maximumValue = Float(playersMoney)
 //        bettingSlider.value = 0
         
-        
-        
         blackjackGame.deal()
-        playersHand = blackjackGame.getPlayersHand()
-        dealersHand = blackjackGame.getDealersHand()
-        
-        playerCardViews = [UIImageView]()
-        dealersCardViews = [UIImageView]()
+        playerCardViews.removeAll()
+        dealersCardViews.removeAll()
   
         // Create the playerCardViews
         for card in playersHand {
@@ -275,7 +276,8 @@ extension GameTableViewController {
                         animationOffset + 0.05 : 0.35
                 }, completion: { (success) in
                     if success {
-                        self.removeSubViews(fromSubviewArray: playerCardViews, orSpecificIndex: nil)
+                        // MARK: - attempting to remove card, but still is in memory
+                        playerCardViews[i].removeFromSuperview()
                     }
                 })
             }
@@ -288,23 +290,13 @@ extension GameTableViewController {
                         animationOffset + 0.05 : 0.35
                 }, completion: { (success) in
                     if success {
-                        self.removeSubViews(fromSubviewArray: dealerCardViews, orSpecificIndex: nil)
+                        // MARK: - attempting to remove card, but still is in memory
+                        dealerCardViews[i].removeFromSuperview()
                     }
                 })
             }
         } else {
             return
         }
-    }
-    
-    func removeSubViews(fromSubviewArray subview: [UIImageView], orSpecificIndex index: Int?) {
-        if index == nil {
-            for i in 0..<subview.count {
-                subview[i].removeFromSuperview()
-            }
-        } else {
-            subview[index!].removeFromSuperview()
-        }
-        
     }
 }
