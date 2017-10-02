@@ -14,7 +14,7 @@ class GameTableViewController: UIViewController {
     @IBOutlet weak var bettingLabel: UILabel!
     @IBOutlet weak var moneyLabel: UILabel!
     
-    var playersMoney = 500
+    var playersMoney = 501
     var blackjackGame = BlackjackBrain()
     var playersHand = [card]()
     var dealersHand = [card]()
