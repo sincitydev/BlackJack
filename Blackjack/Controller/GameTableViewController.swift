@@ -20,6 +20,8 @@ class GameTableViewController: UIViewController {
     var playersHand = [card]()
     var dealersHand = [card]()
     
+    
+    
     var playerCardViews = [UIImageView]()
     var dealersCardViews = [UIImageView]()
     
@@ -28,6 +30,8 @@ class GameTableViewController: UIViewController {
         super.viewDidLoad()
 
         moneyLabel.text = getMoneyString(forInt: playersMoney)
+        bettingSlider.value = 0
+        bettingSlider.maximumValue = Float(playersMoney)
         
         let hitGetstureRecgonizer = UISwipeGestureRecognizer(target: self, action: #selector(hit(sender:)))
         
@@ -73,10 +77,20 @@ class GameTableViewController: UIViewController {
         }
     }
     
+    @IBAction func sliderAction(_ sender: UISlider) {
+        bettingLabel.text = "Betting: $\(sender.value.rounded())"
+        let newTotal = playersMoney - Int(sender.value.rounded())
+        moneyLabel.text = "\(newTotal)"
+        
+    }
+    
     @IBAction func dealButtonPressed(_ sender: Any) {
         // Dount allow new deal until player stands
         dealButton.isEnabled = false
         
+        playersMoney = Int(moneyLabel.text!)!
+        bettingSlider.maximumValue = Float(playersMoney)
+        bettingSlider.value = 0
         blackjackGame.deal()
         playersHand = blackjackGame.getPlayersHand()
         dealersHand = blackjackGame.getDealersHand()
