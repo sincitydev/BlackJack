@@ -15,6 +15,10 @@ class GameTableViewController: UIViewController {
     @IBOutlet weak var moneyLabel: UILabel!
     @IBOutlet weak var dealButton: UIButton!
     
+    @IBOutlet weak var dealersHandLabel: UILabel!
+    
+    @IBOutlet weak var playersHandLabel: UILabel!
+    
     let userDefaults = UserDefaults.standard
     
     var playersMoney = 500
@@ -31,21 +35,29 @@ class GameTableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        playersHandLabel.isHidden = true
+        dealersHandLabel.isHidden = true
+        
         moneyLabel.text = getMoneyString(forInt: playersMoney)
-        bettingSlider.value = 0
+        bettingSlider.value = bettingSlider.minimumValue
+        bettingLabel.text = "Betting: $\(bettingSlider.value)"
         bettingSlider.maximumValue = Float(playersMoney)
         
         let hitGetstureRecgonizer = UISwipeGestureRecognizer(target: self, action: #selector(hit(sender:)))
         
         let stayGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(stay(sender:)))
         
+        let endGestureRocognnizer = UISwipeGestureRecognizer(target: self, action: #selector(clear(sender:)))
+        
         stayGestureRecognizer.numberOfTapsRequired = 2
         
         hitGetstureRecgonizer.direction = .down
+        endGestureRocognnizer.direction = .right
+        
         
         view.addGestureRecognizer(hitGetstureRecgonizer)
         view.addGestureRecognizer(stayGestureRecognizer)
-        
+        view.addGestureRecognizer(endGestureRocognnizer)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -80,12 +92,31 @@ class GameTableViewController: UIViewController {
         } else {
             print("Stay")
             
-            // CHANGE THIS LATER SO THAT BETTING AND WIN CONDITION CAN TAKE PLACE
-            // Just to test animations
-            standAnimation(playerCardViews: playerCardViews, dealerCardViews: dealersCardViews)
+            // MARK: - CHANGE THIS LATER SO THAT BETTING AND WIN CONDITION CAN TAKE PLACE
             dealButton.isEnabled = true
+            dealersCardViews[1].image = getUIImage(forCard: dealersHand[1])
             
+            blackjackGame.dealerPlays(scoreToBeat: blackjackGame.getBestValue(ofHand: playersHand))
+            dealersHand = blackjackGame.getDealersHand()
+            
+            for i in 2..<dealersHand.count {
+                dealersCardViews.append(createCardView(forCard: dealersHand[i]))
+                self.view.addSubview(dealersCardViews[i])
+            }
+            
+            hitAnimation(forPlayer: false, cardViews: dealersCardViews)
         }
+    }
+    
+    @objc func clear(sender: UISwipeGestureRecognizer) {
+        clearAnimation(playerCardViews: playerCardViews, dealerCardViews: dealersCardViews)
+        
+        dealButton.isHidden = false
+        bettingSlider.isHidden = false
+        moneyLabel.isHidden = false
+        bettingLabel.isHidden = false
+        playersHandLabel.isHidden = true
+        dealersHandLabel.isHidden = true
     }
     
     @IBAction func sliderAction(_ sender: UISlider) {
@@ -97,17 +128,25 @@ class GameTableViewController: UIViewController {
     
     @IBAction func dealButtonPressed(_ sender: Any) {
         // Dount allow new deal until player stands
-        dealButton.isEnabled = false
+        dealButton.isHidden = true
+        bettingSlider.isHidden = true
+        moneyLabel.isHidden = true
+        bettingLabel.isHidden = true
+        dealersHandLabel.isHidden = false
+        playersHandLabel.isHidden = false
         
-        playersMoney = Int(moneyLabel.text!)!
-        bettingSlider.maximumValue = Float(playersMoney)
-        bettingSlider.value = 0
+        
+        // MARK: - WORKOUT BETTING HERE
+//        playersMoney = Int(moneyLabel.text!)!
+//        bettingSlider.maximumValue = Float(playersMoney)
+//        bettingSlider.value = 0
+        
+        
+        
         blackjackGame.deal()
         playersHand = blackjackGame.getPlayersHand()
         dealersHand = blackjackGame.getDealersHand()
         
-        // Empty the sub views during new deal
-        // CREATE A FUNCTION TO REMOVE OLD SUBVIEWS FROM MEMORY
         playerCardViews = [UIImageView]()
         dealersCardViews = [UIImageView]()
   
@@ -157,21 +196,24 @@ extension GameTableViewController {
         cardView.layer.shadowColor = UIColor.black.cgColor
         cardView.layer.shadowOffset = CGSize(width: 1, height: 1)
         cardView.layer.shadowOpacity = 0.70
-        
-        switch card {
-        case .spade(let value):
-            cardView.image = UIImage(named: "\(value)_of_spades")
-        case .heart(let value):
-            cardView.image = UIImage(named: "\(value)_of_hearts")
-        case .club(let value):
-            cardView.image = UIImage(named: "\(value)_of_clubs")
-        case .diamond(let value):
-            cardView.image = UIImage(named: "\(value)_of_diamonds")
-        case .backing:
-            cardView.image = UIImage(named: "card_backing")
-        }
+        cardView.image = getUIImage(forCard: card)
         
         return cardView
+    }
+    
+    func getUIImage(forCard card: card) -> UIImage? {
+        switch card {
+        case .spade(let value):
+            return UIImage(named: "\(value)_of_spades")
+        case .heart(let value):
+            return UIImage(named: "\(value)_of_hearts")
+        case .club(let value):
+            return UIImage(named: "\(value)_of_clubs")
+        case .diamond(let value):
+            return UIImage(named: "\(value)_of_diamonds")
+        case .backing:
+            return UIImage(named: "card_backing")
+        }
     }
     
     func getCardBacking() -> UIImageView {
@@ -197,7 +239,7 @@ extension GameTableViewController {
                 targetY = (self.view.bounds.size.height - imageHeight - yOffset)
             } else {
                 targetX = ((self.view.bounds.size.width - totalWidth) / 2) + totalWidth - imageWidth
-                targetY = yOffset
+                targetY = yOffset + 10
                 
                 xOffset = -1 * xOffset
             }
@@ -217,7 +259,7 @@ extension GameTableViewController {
         }
     }
     
-    func standAnimation(playerCardViews: [UIImageView], dealerCardViews: [UIImageView]) {
+    func clearAnimation(playerCardViews: [UIImageView], dealerCardViews: [UIImageView]) {
         if playerCardViews.count != 0 && dealerCardViews.count != 0 {
             let imageHeight = playerCardViews[0].bounds.size.height
             let imageWidth = playerCardViews[0].bounds.size.width
@@ -228,9 +270,13 @@ extension GameTableViewController {
             for i in 0..<playerCardViews.count {
                 UIView.animate(withDuration: animationOffset, animations: {
                     playerCardViews[i].frame = CGRect(x: targetX, y: targetY, width: imageWidth, height: imageHeight)
-       
+                    
                     animationOffset = animationOffset <= 0.35 ?
                         animationOffset + 0.05 : 0.35
+                }, completion: { (success) in
+                    if success {
+                        self.removeSubViews(fromSubviewArray: playerCardViews, orSpecificIndex: nil)
+                    }
                 })
             }
             
@@ -240,10 +286,25 @@ extension GameTableViewController {
                     
                     animationOffset = animationOffset <= 0.35 ?
                         animationOffset + 0.05 : 0.35
+                }, completion: { (success) in
+                    if success {
+                        self.removeSubViews(fromSubviewArray: dealerCardViews, orSpecificIndex: nil)
+                    }
                 })
             }
         } else {
             return
         }
+    }
+    
+    func removeSubViews(fromSubviewArray subview: [UIImageView], orSpecificIndex index: Int?) {
+        if index == nil {
+            for i in 0..<subview.count {
+                subview[i].removeFromSuperview()
+            }
+        } else {
+            subview[index!].removeFromSuperview()
+        }
+        
     }
 }

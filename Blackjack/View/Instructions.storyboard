@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="jAk-yh-J3c">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13189.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="jAk-yh-J3c">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13165.3"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -30,7 +30,7 @@
                                 <size key="shadowOffset" width="0.0" height="3"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Swipe down  to hit" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zy9-fr-1e2">
-                                <rect key="frame" x="10" y="196" width="355" height="98.5"/>
+                                <rect key="frame" x="10" y="161" width="355" height="98.5"/>
                                 <color key="backgroundColor" red="0.041640228430000002" green="0.054132296949999999" blue="0.029148159900000001" alpha="0.45361622429999998" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" weight="black" pointSize="40"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -39,7 +39,7 @@
                                 <size key="shadowOffset" width="0.0" height="3"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Double tap  to stay" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YBc-mg-JFf">
-                                <rect key="frame" x="10" y="344.5" width="355" height="99"/>
+                                <rect key="frame" x="10" y="299.5" width="355" height="99"/>
                                 <color key="backgroundColor" red="0.041640228430000002" green="0.054132296949999999" blue="0.029148159900000001" alpha="0.45361622429999998" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" weight="black" pointSize="40"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -72,18 +72,31 @@
                                     <action selector="dismiss" destination="jAk-yh-J3c" eventType="touchUpInside" id="csg-N7-Srh"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Swipe right to clear table " textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7h3-zQ-Cak">
+                                <rect key="frame" x="10" y="438.5" width="355" height="100"/>
+                                <color key="backgroundColor" red="0.041640228430000002" green="0.054132296949999999" blue="0.029148159900000001" alpha="0.45361622429999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="uAS-Hj-IOP"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="black" pointSize="40"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                                <color key="shadowColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <size key="shadowOffset" width="0.0" height="3"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="7h3-zQ-Cak" firstAttribute="top" secondItem="YBc-mg-JFf" secondAttribute="bottom" constant="40" id="4Cg-sg-WzO"/>
                             <constraint firstItem="tin-qD-G2Y" firstAttribute="trailing" secondItem="Zy9-fr-1e2" secondAttribute="trailing" constant="10" id="6eM-yj-O5Y"/>
                             <constraint firstItem="tin-qD-G2Y" firstAttribute="trailing" secondItem="YBc-mg-JFf" secondAttribute="trailing" constant="10" id="8uf-4Y-dZz"/>
                             <constraint firstItem="EjU-rL-me3" firstAttribute="trailing" secondItem="tin-qD-G2Y" secondAttribute="trailing" id="BF9-ui-yUa"/>
-                            <constraint firstItem="Zy9-fr-1e2" firstAttribute="top" secondItem="gVf-IY-omM" secondAttribute="bottom" constant="75" id="G7N-fm-f3D"/>
+                            <constraint firstItem="Zy9-fr-1e2" firstAttribute="top" secondItem="gVf-IY-omM" secondAttribute="bottom" constant="40" id="G7N-fm-f3D"/>
                             <constraint firstItem="bM6-hp-2Ee" firstAttribute="centerX" secondItem="hYW-PL-IWd" secondAttribute="centerX" id="Izp-Tp-w2M"/>
                             <constraint firstItem="gVf-IY-omM" firstAttribute="leading" secondItem="tin-qD-G2Y" secondAttribute="leading" constant="10" id="KGI-Xv-quZ"/>
                             <constraint firstItem="EjU-rL-me3" firstAttribute="bottom" secondItem="tin-qD-G2Y" secondAttribute="bottom" id="Mr8-SN-dUQ"/>
                             <constraint firstItem="YBc-mg-JFf" firstAttribute="leading" secondItem="tin-qD-G2Y" secondAttribute="leading" constant="10" id="Q3b-GJ-qaH"/>
-                            <constraint firstItem="YBc-mg-JFf" firstAttribute="top" secondItem="Zy9-fr-1e2" secondAttribute="bottom" constant="50" id="UMR-RC-8rR"/>
+                            <constraint firstItem="YBc-mg-JFf" firstAttribute="top" secondItem="Zy9-fr-1e2" secondAttribute="bottom" constant="40" id="UMR-RC-8rR"/>
                             <constraint firstItem="gVf-IY-omM" firstAttribute="centerX" secondItem="hYW-PL-IWd" secondAttribute="centerX" id="Ukr-h8-li7"/>
                             <constraint firstItem="Zy9-fr-1e2" firstAttribute="leading" secondItem="tin-qD-G2Y" secondAttribute="leading" constant="10" id="aXm-At-i2B"/>
                             <constraint firstItem="EjU-rL-me3" firstAttribute="leading" secondItem="tin-qD-G2Y" secondAttribute="leading" id="cvC-mV-qeR"/>
@@ -91,7 +104,9 @@
                             <constraint firstItem="Zy9-fr-1e2" firstAttribute="centerX" secondItem="hYW-PL-IWd" secondAttribute="centerX" id="iAL-Ld-e2V"/>
                             <constraint firstItem="tin-qD-G2Y" firstAttribute="bottom" secondItem="bM6-hp-2Ee" secondAttribute="bottom" constant="25" id="iac-ID-Okm"/>
                             <constraint firstItem="gVf-IY-omM" firstAttribute="top" secondItem="tin-qD-G2Y" secondAttribute="top" constant="50" id="k6t-fa-56s"/>
+                            <constraint firstItem="7h3-zQ-Cak" firstAttribute="leading" secondItem="YBc-mg-JFf" secondAttribute="leading" id="l6c-72-DDh"/>
                             <constraint firstItem="tin-qD-G2Y" firstAttribute="trailing" secondItem="gVf-IY-omM" secondAttribute="trailing" constant="10" id="tw0-oW-Myg"/>
+                            <constraint firstItem="7h3-zQ-Cak" firstAttribute="trailing" secondItem="YBc-mg-JFf" secondAttribute="trailing" id="xcQ-ni-GlZ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="tin-qD-G2Y"/>
                     </view>
