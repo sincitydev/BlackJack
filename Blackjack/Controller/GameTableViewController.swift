@@ -15,6 +15,8 @@ class GameTableViewController: UIViewController {
     @IBOutlet weak var moneyLabel: UILabel!
     @IBOutlet weak var dealButton: UIButton!
     
+    let userDefaults = UserDefaults.standard
+    
     var playersMoney = 500
     var blackjackGame = BlackjackBrain()
     var playersHand = [card]()
@@ -44,6 +46,15 @@ class GameTableViewController: UIViewController {
         view.addGestureRecognizer(hitGetstureRecgonizer)
         view.addGestureRecognizer(stayGestureRecognizer)
         
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        let instructionsVC = UIStoryboard.init(name: "Instructions", bundle: nil).instantiateInitialViewController() as! InstructionsViewController
+        
+        if !userDefaults.bool(forKey: Literals.visitedBefore)
+        {
+            self.present(instructionsVC, animated: true, completion: nil)
+        }
     }
     
     @objc func hit(sender: UISwipeGestureRecognizer) {
