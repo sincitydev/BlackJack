@@ -161,7 +161,7 @@ extension BlackjackBrain {
         numberOfCardsUnplayed = gameDeck.retrieveDeck().count
     }
     
-    private func getBestValue(ofHand hand: [card]) -> Int {
+    func getBestValue(ofHand hand: [card]) -> Int {
         let hardValue = totalValue(ofHand: hand, returnSoftValue: false)
         let softValue = totalValue(ofHand: hand, returnSoftValue: true)
         return hardValue <= 21 ? hardValue : softValue
