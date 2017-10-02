@@ -68,13 +68,17 @@ class GameTableViewController: UIViewController {
     @IBAction func sliderAction(_ sender: UISlider) {
         bettingLabel.text = "Betting: $\(sender.value.rounded())"
         let newTotal = playersMoney - Int(sender.value.rounded())
-        moneyLabel.text = "$\(newTotal)"
+        moneyLabel.text = "\(newTotal)"
+        
     }
     
     
 
     @IBAction func dealButtonPressed(_ sender: Any) {
         
+        playersMoney = Int(moneyLabel.text!)!
+        bettingSlider.maximumValue = Float(playersMoney)
+        bettingSlider.value = 0
         blackjackGame.deal()
         playersHand = blackjackGame.getPlayersHand()
         dealersHand = blackjackGame.getDealersHand()
