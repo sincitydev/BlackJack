@@ -14,6 +14,7 @@ enum card {
     case heart(Int)
     case club(Int)
     case diamond(Int)
+    case backing
 }
 
 class PlayingCards {

@@ -179,6 +179,8 @@ extension BlackjackBrain {
                 totalValue += cardValue(value, isSoft: isSoft)
             case .diamond(let value):
                 totalValue += cardValue(value, isSoft: isSoft)
+            case .backing:
+                break
             }
         }
         return totalValue
