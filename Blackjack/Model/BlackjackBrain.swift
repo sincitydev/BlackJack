@@ -120,23 +120,12 @@ class BlackjackBrain {
     }
     
     // returns blackjack score value for required information
-    func getPlayerSoftValue() -> Int {
-        return totalValue(ofHand: playersCards, returnSoftValue: true)
+    func getPlayerValue() -> Int {
+        return getBestValue(ofHand: playersCards)
     }
     
-    // returns blackjack score value for required information
-    func getPlayerHardValue() -> Int {
-        return totalValue(ofHand: playersCards, returnSoftValue: false)
-    }
-    
-    // returns blackjack score value for required information
-    func getDealerSoftValue() -> Int {
-        return totalValue(ofHand: dealersCards, returnSoftValue: true)
-    }
-    
-    // returns blackjack score value for required information
-    func getDealerHardValue() -> Int {
-        return totalValue(ofHand: dealersCards, returnSoftValue: false)
+    func getDealerValue() -> Int {
+        return getBestValue(ofHand: dealersCards)
     }
     
     // returns blackjack score value for required information
@@ -161,39 +150,58 @@ extension BlackjackBrain {
         numberOfCardsUnplayed = gameDeck.retrieveDeck().count
     }
     
-    func getBestValue(ofHand hand: [card]) -> Int {
-        let hardValue = totalValue(ofHand: hand, returnSoftValue: false)
-        let softValue = totalValue(ofHand: hand, returnSoftValue: true)
-        return hardValue <= 21 ? hardValue : softValue
-    }
-    
-    private func totalValue(ofHand hand: [card], returnSoftValue isSoft: Bool) -> Int {
+    private func getBestValue(ofHand hand: [card]) -> Int {
         var totalValue = 0
+        var numberOfAces = 0
+        var valueOfAces = 0
+        
         for eachCard in hand {
             switch eachCard {
             case .spade(let value):
-                totalValue += cardValue(value, isSoft: isSoft)
+                if value == 1 {
+                    numberOfAces += 1
+                } else {
+                    totalValue += cardValue(value)
+                }
             case .heart(let value):
-                totalValue += cardValue(value, isSoft: isSoft)
+                if value == 1 {
+                    numberOfAces += 1
+                } else {
+                    totalValue += cardValue(value)
+                }
             case .club(let value):
-                totalValue += cardValue(value, isSoft: isSoft)
+                if value == 1 {
+                    numberOfAces += 1
+                } else {
+                    totalValue += cardValue(value)
+                }
             case .diamond(let value):
-                totalValue += cardValue(value, isSoft: isSoft)
+                if value == 1 {
+                    numberOfAces += 1
+                } else {
+                    totalValue += cardValue(value)
+                }
             case .backing:
                 break
             }
         }
-        return totalValue
+        
+        valueOfAces = 11 * numberOfAces
+        for _ in 0..<numberOfAces {
+            if (totalValue + valueOfAces <= 21) {
+                return totalValue + valueOfAces
+            } else {
+                valueOfAces -= 10
+            }
+        }
+        
+        // returns soft value if busted
+        return totalValue + numberOfAces
     }
     
-    private func cardValue(_ card: Int, isSoft: Bool) -> Int {
-        if (card == 1) {
-            if isSoft {
-                return 1
-            } else {
-                return 11
-            }
-        } else if (card == 11 || card == 12 || card == 13) {
+
+    private func cardValue(_ card: Int) -> Int {
+        if (card == 11 || card == 12 || card == 13) {
             return 10
         } else {
             return card

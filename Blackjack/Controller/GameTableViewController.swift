@@ -43,7 +43,7 @@ class GameTableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(stay(_:)))
+        doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(stand(_:)))
         swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(hit(_:)))
         swipeRightGesture = UISwipeGestureRecognizer(target: self, action: #selector(clear(_:)))
         
@@ -87,9 +87,13 @@ class GameTableViewController: UIViewController {
         self.view.addSubview(cardView)
         
         hitAnimation(forPlayer: true, cardViews: playerCardViews)
+        
+        if blackjackGame.didPlayerBust() {
+            stand(doubleTapGesture)
+        }
     }
     
-    @objc func stay(_ sender: UITapGestureRecognizer) {
+    @objc func stand(_ sender: UITapGestureRecognizer) {
         doubleTapGesture.isEnabled = false
         swipeDownGesture.isEnabled = false
         swipeRightGesture.isEnabled = true
@@ -100,7 +104,7 @@ class GameTableViewController: UIViewController {
         // Flips the hidden card
         dealersCardViews[1].image = getUIImage(forCard: dealersHand[1])
         
-        blackjackGame.dealerPlays(scoreToBeat: blackjackGame.getBestValue(ofHand: playersHand))
+        blackjackGame.dealerPlays(scoreToBeat: blackjackGame.getPlayerValue())
         
         for i in 2..<dealersHand.count {
             dealersCardViews.append(createCardView(forCard: dealersHand[i]))
@@ -108,6 +112,12 @@ class GameTableViewController: UIViewController {
         }
         
         hitAnimation(forPlayer: false, cardViews: dealersCardViews)
+        
+        // MARK: - Used for condition checking
+        print("Players hand: \(blackjackGame.getPlayerValue())")
+        print("Dealers hand: \(blackjackGame.getDealerValue())")
+        print("Did player win: \(blackjackGame.didPlayerWin())")
+        print("Did players draw: \(blackjackGame.didDraw())")
     }
     
     @objc func clear(_ sender: UISwipeGestureRecognizer) {
