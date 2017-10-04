@@ -4,10 +4,16 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13165.3"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="Menlo.ttc">
+            <string>Menlo-Bold</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--Game Table View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -19,7 +25,7 @@
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="QqL-wE-Pbh">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <gestureRecognizers/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ty1-wr-M8m">
@@ -54,13 +60,13 @@
                                     <action selector="sliderAction:" destination="BYZ-38-t0r" eventType="valueChanged" id="ltt-9a-HNC"/>
                                 </connections>
                             </slider>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your hand" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rdV-i1-gWd">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your hand" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rdV-i1-gWd">
                                 <rect key="frame" x="148.5" y="496" width="78" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dealers hand" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zWv-cL-Gjp">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dealers hand" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zWv-cL-Gjp">
                                 <rect key="frame" x="137" y="165" width="101" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -75,6 +81,29 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Blackjack-Logo-600x253" translatesAutoresizingMaskIntoConstraints="NO" id="sWA-ba-sWl">
+                                <rect key="frame" x="67" y="49" width="240" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="FBO-Jc-oig"/>
+                                    <constraint firstAttribute="height" constant="50" id="Oax-5n-DKz"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zlz-OF-Ykz">
+                                <rect key="frame" x="156" y="567" width="62" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <state key="normal" title="Go All In!">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="allInButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="6dL-jK-GY3"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You win!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0PZ-sz-H2d">
+                                <rect key="frame" x="120" y="317" width="135" height="33"/>
+                                <fontDescription key="fontDescription" name="Menlo-Bold" family="Menlo" pointSize="28"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.25098040700000002" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -87,24 +116,31 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="f7a-vT-hhd" secondAttribute="trailing" constant="20" id="RkG-kK-zhb"/>
                             <constraint firstItem="f7a-vT-hhd" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="V8y-vh-qDr"/>
                             <constraint firstItem="rdV-i1-gWd" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="aF2-jM-yG1"/>
+                            <constraint firstItem="sWA-ba-sWl" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="acu-AX-1tq"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="rdV-i1-gWd" secondAttribute="bottom" constant="150" id="bsW-aB-4QZ"/>
                             <constraint firstItem="f7a-vT-hhd" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="eG8-3z-MCc"/>
                             <constraint firstItem="zWv-cL-Gjp" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="gFt-NB-q1X"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="ty1-wr-M8m" secondAttribute="trailing" constant="20" id="iG5-lj-vet"/>
+                            <constraint firstItem="sWA-ba-sWl" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="29" id="jLa-4e-OB9"/>
                             <constraint firstItem="ty1-wr-M8m" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="mGf-Zb-rUC"/>
                             <constraint firstItem="dmN-xe-jvz" firstAttribute="trailing" secondItem="f7a-vT-hhd" secondAttribute="trailing" id="mY7-xl-yeV"/>
+                            <constraint firstItem="0PZ-sz-H2d" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="nbi-wC-9Wb"/>
                             <constraint firstItem="oSn-EX-Bpd" firstAttribute="trailing" secondItem="f7a-vT-hhd" secondAttribute="trailing" id="rwp-zB-jFj"/>
+                            <constraint firstItem="0PZ-sz-H2d" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="xi4-LZ-anh"/>
                             <constraint firstItem="dmN-xe-jvz" firstAttribute="leading" secondItem="f7a-vT-hhd" secondAttribute="leading" id="yes-uG-Uo2"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="allInButton" destination="Zlz-OF-Ykz" id="4sM-WG-thi"/>
                         <outlet property="bettingLabel" destination="dmN-xe-jvz" id="eLm-mQ-lXo"/>
                         <outlet property="bettingSlider" destination="f7a-vT-hhd" id="7D5-IS-wfR"/>
+                        <outlet property="blackjackLogoImage" destination="sWA-ba-sWl" id="NMM-Ui-eMZ"/>
                         <outlet property="dealButton" destination="ty1-wr-M8m" id="tag-kx-hpD"/>
                         <outlet property="dealersHandLabel" destination="zWv-cL-Gjp" id="zPn-lR-i8e"/>
                         <outlet property="moneyLabel" destination="oSn-EX-Bpd" id="uzq-uZ-Hzv"/>
                         <outlet property="playersHandLabel" destination="rdV-i1-gWd" id="i0e-Dn-bhQ"/>
+                        <outlet property="statusLabel" destination="0PZ-sz-H2d" id="dH2-UP-nVr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -113,6 +149,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Blackjack-Logo-600x253" width="600" height="253"/>
         <image name="background" width="1248" height="1440"/>
     </resources>
 </document>

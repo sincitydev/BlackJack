@@ -11,9 +11,6 @@ import UIKit
 class GameTableViewController: UIViewController {
 
     let userDefaults = UserDefaults.standard
-    var playersMoney = 500
-    var playersBet = 0
-    var blackjackGame = BlackjackBrain()
     
     @IBOutlet weak var bettingSlider: UISlider!
     @IBOutlet weak var bettingLabel: UILabel!
@@ -21,11 +18,17 @@ class GameTableViewController: UIViewController {
     @IBOutlet weak var dealButton: UIButton!
     @IBOutlet weak var dealersHandLabel: UILabel!
     @IBOutlet weak var playersHandLabel: UILabel!
+    @IBOutlet weak var statusLabel: UILabel!
+    @IBOutlet weak var blackjackLogoImage: UIImageView!
     
+    @IBOutlet weak var allInButton: UIButton!
     var doubleTapGesture: UITapGestureRecognizer!
     var swipeRightGesture: UISwipeGestureRecognizer!
     var swipeDownGesture: UISwipeGestureRecognizer!
     
+    var playersMoney = 500
+    var playersBet = 0
+    var blackjackGame = BlackjackBrain()
     var playerCardViews = [UIImageView]()
     var dealersCardViews = [UIImageView]()
     
@@ -43,7 +46,19 @@ class GameTableViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupGestures()
+        setupView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        let instructionsVC = UIStoryboard.init(name: "Instructions", bundle: nil).instantiateInitialViewController() as! InstructionsViewController
         
+        if !userDefaults.bool(forKey: Literals.visitedBefore) {
+            self.present(instructionsVC, animated: true, completion: nil)
+        }
+    }
+    
+    func setupGestures() {
         doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(stand(_:)))
         swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(hit(_:)))
         swipeRightGesture = UISwipeGestureRecognizer(target: self, action: #selector(clear(_:)))
@@ -55,114 +70,66 @@ class GameTableViewController: UIViewController {
         self.view.addGestureRecognizer(doubleTapGesture)
         self.view.addGestureRecognizer(swipeDownGesture)
         self.view.addGestureRecognizer(swipeRightGesture)
-    
-        setupView()
     }
     
     func setupView() {
         playersHandLabel.isHidden = true
         dealersHandLabel.isHidden = true
+        statusLabel.isHidden = true
         doubleTapGesture.isEnabled = false
         swipeDownGesture.isEnabled = false
         swipeRightGesture.isEnabled = false
         
-        moneyLabel.text = getMoneyString(forInt: playersMoney)
-        bettingSlider.value = bettingSlider.minimumValue
-        bettingLabel.text = "Betting: $\(bettingSlider.value)"
-        bettingSlider.maximumValue = Float(playersMoney)
-    }
-    
-    func updateView() {
-        moneyLabel.text = getMoneyString(forInt: playersMoney)
-        bettingSlider.value = bettingSlider.minimumValue
-        bettingLabel.text = "Betting: $\(bettingSlider.value)"
-        bettingSlider.maximumValue = Float(playersMoney)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        let instructionsVC = UIStoryboard.init(name: "Instructions", bundle: nil).instantiateInitialViewController() as! InstructionsViewController
-        
-        if !userDefaults.bool(forKey: Literals.visitedBefore) {
-            self.present(instructionsVC, animated: true, completion: nil)
-        }
-    }
-    
-    @objc func hit(_ sender: UISwipeGestureRecognizer) {
-        // Adding the new card to screen
-        blackjackGame.hitPlayer()
-        let cardView = createCardView(forCard: playersHand[playersHand.count - 1])
-        playerCardViews.append(cardView)
-        self.view.addSubview(cardView)
-        
-        hitAnimation(forPlayer: true, cardViews: playerCardViews)
-        
-        if blackjackGame.didPlayerBust() {
-            clear(swipeRightGesture)
-        } else if blackjackGame.getPlayerValue() == 21 {
-            stand(doubleTapGesture)
-        }
-    }
-    
-    @objc func stand(_ sender: UITapGestureRecognizer) {
-        doubleTapGesture.isEnabled = false
-        swipeDownGesture.isEnabled = false
-        swipeRightGesture.isEnabled = true
+        statusLabel.layer.shadowOffset = CGSize(width: 1, height: 1)
+        statusLabel.layer.shadowOpacity = 1
+        statusLabel.layer.shadowRadius = 1
+        statusLabel.layer.shadowColor = UIColor.black.cgColor
         
         
-        // MARK: - CHANGE THIS LATER SO THAT BETTING AND WIN CONDITION CAN TAKE PLACE
-        
-        // Flips the hidden card
-        dealersCardViews[1].image = getUIImage(forCard: dealersHand[1])
-        
-        blackjackGame.dealerPlays(scoreToBeat: blackjackGame.getPlayerValue())
-        
-        for i in 2..<dealersHand.count {
-            dealersCardViews.append(createCardView(forCard: dealersHand[i]))
-            self.view.addSubview(dealersCardViews[i])
-        }
-        
-        hitAnimation(forPlayer: false, cardViews: dealersCardViews)
-        
-        // MARK: - Used for condition checking
-        print("Players hand: \(blackjackGame.getPlayerValue())")
-        print("Dealers hand: \(blackjackGame.getDealerValue())")
-        print("Did player win: \(blackjackGame.didPlayerWin())")
-        print("Did players draw: \(blackjackGame.didDraw())")
-    }
-    
-    @objc func clear(_ sender: UISwipeGestureRecognizer) {
-        clearAnimation(playerCardViews: playerCardViews, dealerCardViews: dealersCardViews)
-        doubleTapGesture.isEnabled = false
-        swipeDownGesture.isEnabled = false
-        
-        dealButton.isHidden = false
-        bettingSlider.isHidden = false
-        moneyLabel.isHidden = false
-        bettingLabel.isHidden = false
-        playersHandLabel.isHidden = true
-        dealersHandLabel.isHidden = true
-        
-        swipeRightGesture.isEnabled = false
-        
-        if blackjackGame.didPlayerWin() {
-            playersMoney += playersBet * 2
-        } else if blackjackGame.didDraw() {
-            playersMoney += playersBet
-        }
-        
-        
-        if playersMoney == 0 {
-            playersMoney = 500
-        }
         updateView()
     }
     
-    @IBAction func sliderAction(_ sender: UISlider) {
-        playersBet = Int(sender.value.rounded())
-        bettingLabel.text = "Betting: $\(playersBet)"
-        let newTotal = playersMoney - Int(sender.value.rounded())
-        moneyLabel.text = getMoneyString(forInt: newTotal)
-        
+    func updateView() {
+        bettingLabel.text = "Betting: $\(bettingSlider.value)"
+        bettingSlider.maximumValue = Float(playersMoney)
+        bettingSlider.value = (bettingSlider.maximumValue / 2).rounded()
+        bettingLabel.text = "Betting: $\(bettingSlider.value)"
+        playersBet = Int(bettingSlider.value)
+        moneyLabel.text = "$\(playersMoney - playersBet)"
+    }
+    
+    func updateValuesOfHands(revealDealer reveal: Bool) {
+        playersHandLabel.text = "Your hand: \(blackjackGame.getPlayerValue())"
+        dealersHandLabel.text = "Dealer's hand "
+        if reveal {
+            dealersHandLabel.text! += "\(blackjackGame.getDealerValue())"
+        } else {
+            var cardValue: Int
+            switch dealersHand[0] {
+                case .spade(let value):
+                    cardValue = value
+                case .club(let value):
+                    cardValue = value
+                case .heart(let value):
+                    cardValue = value
+                case .diamond(let value):
+                    cardValue = value
+                case .backing:
+                    cardValue = 0
+            }
+            
+            if cardValue == 1 {
+                cardValue = 11
+            } else if cardValue == 11 || cardValue == 12 || cardValue == 13 {
+                cardValue = 10
+            }
+            
+            dealersHandLabel.text! += "\(cardValue)"
+        }
+    }
+    @IBAction func allInButtonPressed(_ sender: Any) {
+        playersBet = playersMoney
+        dealButtonPressed(0)
     }
     
     @IBAction func dealButtonPressed(_ sender: Any) {
@@ -171,22 +138,22 @@ class GameTableViewController: UIViewController {
         bettingSlider.isHidden = true
         moneyLabel.isHidden = true
         bettingLabel.isHidden = true
+        allInButton.isHidden = true
         dealersHandLabel.isHidden = false
         playersHandLabel.isHidden = false
+        blackjackLogoImage.isHidden = true
         doubleTapGesture.isEnabled = true
         swipeDownGesture.isEnabled = true
         
-        playersMoney -= playersBet
-        
         // MARK: - WORKOUT BETTING HERE
-//        playersMoney = Int(moneyLabel.text!)!
-//        bettingSlider.maximumValue = Float(playersMoney)
-//        bettingSlider.value = 0
+        //        playersMoney = Int(moneyLabel.text!)!
+        //        bettingSlider.maximumValue = Float(playersMoney)
+        //        bettingSlider.value = 0
         
         blackjackGame.deal()
         playerCardViews.removeAll()
         dealersCardViews.removeAll()
-  
+        
         // Create the playerCardViews
         for card in playersHand {
             let cardView = createCardView(forCard: card)
@@ -202,20 +169,128 @@ class GameTableViewController: UIViewController {
             } else {
                 cardView = getCardBacking()
             }
-     
+            
             view.addSubview(cardView)
             dealersCardViews.append(cardView)
         }
         
         // Call the animations
+        updateValuesOfHands(revealDealer: false)
         hitAnimation(forPlayer: true, cardViews: playerCardViews)
         hitAnimation(forPlayer: false, cardViews: dealersCardViews)
-    
-    
+        updateValuesOfHands(revealDealer: false)
+        
         if blackjackGame.getPlayerValue() == 21 {
             stand(doubleTapGesture)
         }
     }
+    
+    @objc func hit(_ sender: UISwipeGestureRecognizer) {
+        // Adding the new card to screen
+        blackjackGame.hitPlayer()
+        updateValuesOfHands(revealDealer: false)
+        
+        let cardView = createCardView(forCard: playersHand[playersHand.count - 1])
+        playerCardViews.append(cardView)
+        self.view.addSubview(cardView)
+        
+        hitAnimation(forPlayer: true, cardViews: playerCardViews)
+        
+        if blackjackGame.didPlayerBust() {
+            stand(doubleTapGesture)
+        } else if blackjackGame.getPlayerValue() == 21 {
+            stand(doubleTapGesture)
+        }
+    }
+    
+    @objc func stand(_ sender: UITapGestureRecognizer) {
+        doubleTapGesture.isEnabled = false
+        swipeDownGesture.isEnabled = false
+        swipeRightGesture.isEnabled = true
+        statusLabel.isHidden = false
+        
+        if blackjackGame.didPlayerBust() {
+            statusLabel.text = "YOU BUSTED! xP"
+            statusLabel.textColor = UIColor.red
+            updateValuesOfHands(revealDealer: false)
+            
+            playersMoney -= playersBet
+        } else {
+            // reveals dealers cards
+            dealersCardViews[1].image = getUIImage(forCard: dealersHand[1])
+            
+            blackjackGame.dealerPlays(scoreToBeat: blackjackGame.getPlayerValue())
+            
+            for i in 2..<dealersHand.count {
+                dealersCardViews.append(createCardView(forCard: dealersHand[i]))
+                self.view.addSubview(dealersCardViews[i])
+            }
+            
+            hitAnimation(forPlayer: false, cardViews: dealersCardViews)
+        
+            if blackjackGame.didPlayerWin() {
+                statusLabel.text = "YOU WIN! <3"
+                statusLabel.textColor = UIColor.green
+                updateValuesOfHands(revealDealer: true)
+                
+                playersMoney +=  playersBet
+            } else if blackjackGame.didDraw() {
+                statusLabel.text = "DRAW! -_-"
+                statusLabel.textColor = UIColor.yellow
+                updateValuesOfHands(revealDealer: true)
+                
+                playersMoney += 0
+            } else {
+                statusLabel.text = "YOU LOST! :("
+                statusLabel.textColor = UIColor.red
+                updateValuesOfHands(revealDealer: true)
+                
+                playersMoney -= playersBet
+
+            }
+        
+        }
+        
+        // MARK: - Used for condition checking
+        print("Players hand: \(blackjackGame.getPlayerValue())")
+        print("Dealers hand: \(blackjackGame.getDealerValue())")
+        print("Did player win: \(blackjackGame.didPlayerWin())")
+        print("Did players draw: \(blackjackGame.didDraw())")
+    }
+    
+    @objc func clear(_ sender: UISwipeGestureRecognizer) {
+        clearAnimation(playerCardViews: playerCardViews, dealerCardViews: dealersCardViews)
+        doubleTapGesture.isEnabled = false
+        swipeDownGesture.isEnabled = false
+        swipeRightGesture.isEnabled = false
+        
+        dealButton.isHidden = false
+        bettingSlider.isHidden = false
+        moneyLabel.isHidden = false
+        bettingLabel.isHidden = false
+        allInButton.isHidden = false
+        playersHandLabel.isHidden = true
+        dealersHandLabel.isHidden = true
+        blackjackLogoImage.isHidden = false
+        statusLabel.isHidden = true
+        
+        
+        
+        if playersMoney == 0 {
+            playersMoney = 100
+        }
+        updateView()
+    }
+    
+    @IBAction func sliderAction(_ sender: UISlider) {
+        playersBet = Int(sender.value.rounded())
+        bettingLabel.text = "Betting: $\(playersBet)"
+        let newTotal = playersMoney - Int(sender.value.rounded())
+        moneyLabel.text = getMoneyString(forInt: newTotal)
+        
+    }
+    
+
     
     
 }
