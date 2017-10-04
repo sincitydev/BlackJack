@@ -144,7 +144,7 @@ class GameTableViewController: UIViewController {
         blackjackLogoImage.isHidden = true
         doubleTapGesture.isEnabled = true
         swipeDownGesture.isEnabled = true
-        
+
         // MARK: - WORKOUT BETTING HERE
         //        playersMoney = Int(moneyLabel.text!)!
         //        bettingSlider.maximumValue = Float(playersMoney)
@@ -197,6 +197,8 @@ class GameTableViewController: UIViewController {
         hitAnimation(forPlayer: true, cardViews: playerCardViews)
         
         if blackjackGame.didPlayerBust() {
+            clear(swipeRightGesture)
+        } else if blackjackGame.getPlayerValue() == 21 {
             stand(doubleTapGesture)
         } else if blackjackGame.getPlayerValue() == 21 {
             stand(doubleTapGesture)
@@ -274,8 +276,6 @@ class GameTableViewController: UIViewController {
         blackjackLogoImage.isHidden = false
         statusLabel.isHidden = true
         
-        
-        
         if playersMoney == 0 {
             playersMoney = 100
         }
@@ -288,11 +288,7 @@ class GameTableViewController: UIViewController {
         let newTotal = playersMoney - Int(sender.value.rounded())
         moneyLabel.text = getMoneyString(forInt: newTotal)
         
-    }
-    
-
-    
-    
+    }    
 }
 
 
