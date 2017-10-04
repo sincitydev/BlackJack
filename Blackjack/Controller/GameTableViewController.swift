@@ -12,6 +12,7 @@ class GameTableViewController: UIViewController {
 
     let userDefaults = UserDefaults.standard
     var playersMoney = 500
+    var playersBet = 0
     var blackjackGame = BlackjackBrain()
     
     @IBOutlet weak var bettingSlider: UISlider!
@@ -71,6 +72,13 @@ class GameTableViewController: UIViewController {
         bettingSlider.maximumValue = Float(playersMoney)
     }
     
+    func updateView() {
+        moneyLabel.text = getMoneyString(forInt: playersMoney)
+        bettingSlider.value = bettingSlider.minimumValue
+        bettingLabel.text = "Betting: $\(bettingSlider.value)"
+        bettingSlider.maximumValue = Float(playersMoney)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         let instructionsVC = UIStoryboard.init(name: "Instructions", bundle: nil).instantiateInitialViewController() as! InstructionsViewController
         
@@ -89,6 +97,8 @@ class GameTableViewController: UIViewController {
         hitAnimation(forPlayer: true, cardViews: playerCardViews)
         
         if blackjackGame.didPlayerBust() {
+            clear(swipeRightGesture)
+        } else if blackjackGame.getPlayerValue() == 21 {
             stand(doubleTapGesture)
         }
     }
@@ -122,6 +132,8 @@ class GameTableViewController: UIViewController {
     
     @objc func clear(_ sender: UISwipeGestureRecognizer) {
         clearAnimation(playerCardViews: playerCardViews, dealerCardViews: dealersCardViews)
+        doubleTapGesture.isEnabled = false
+        swipeDownGesture.isEnabled = false
         
         dealButton.isHidden = false
         bettingSlider.isHidden = false
@@ -131,12 +143,25 @@ class GameTableViewController: UIViewController {
         dealersHandLabel.isHidden = true
         
         swipeRightGesture.isEnabled = false
+        
+        if blackjackGame.didPlayerWin() {
+            playersMoney += playersBet * 2
+        } else if blackjackGame.didDraw() {
+            playersMoney += playersBet
+        }
+        
+        
+        if playersMoney == 0 {
+            playersMoney = 500
+        }
+        updateView()
     }
     
     @IBAction func sliderAction(_ sender: UISlider) {
-        bettingLabel.text = "Betting: $\(sender.value.rounded())"
+        playersBet = Int(sender.value.rounded())
+        bettingLabel.text = "Betting: $\(playersBet)"
         let newTotal = playersMoney - Int(sender.value.rounded())
-        moneyLabel.text = "\(newTotal)"
+        moneyLabel.text = getMoneyString(forInt: newTotal)
         
     }
     
@@ -151,6 +176,7 @@ class GameTableViewController: UIViewController {
         doubleTapGesture.isEnabled = true
         swipeDownGesture.isEnabled = true
         
+        playersMoney -= playersBet
         
         // MARK: - WORKOUT BETTING HERE
 //        playersMoney = Int(moneyLabel.text!)!
@@ -184,7 +210,13 @@ class GameTableViewController: UIViewController {
         // Call the animations
         hitAnimation(forPlayer: true, cardViews: playerCardViews)
         hitAnimation(forPlayer: false, cardViews: dealersCardViews)
+    
+    
+        if blackjackGame.getPlayerValue() == 21 {
+            stand(doubleTapGesture)
+        }
     }
+    
     
 }
 
