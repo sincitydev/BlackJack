@@ -56,13 +56,20 @@ class BlackjackBrain {
     func dealerPlays(scoreToBeat score: Int) {
         let dealerCurrentScore = getBestValue(ofHand: dealersCards)
         let challengingScore = score <= 21 ? score : 0
+
+        // removed this logic because house rules says dealer must hit until getting a 16. Then dealer must stop
+//        if (dealerCurrentScore == 21 || dealerCurrentScore == 20) {
+//            return
+//        } else if dealerCurrentScore < 17 || dealerCurrentScore < challengingScore {
+//            hitDealer()
+//        } else {
+//            return
+//        }
         
-        if (dealerCurrentScore == 21 || dealerCurrentScore == 20) {
+        if (dealerCurrentScore >= 16) {
             return
-        } else if dealerCurrentScore < 17 || dealerCurrentScore < challengingScore {
-            hitDealer()
         } else {
-            return
+            hitDealer()
         }
         
         dealerPlays(scoreToBeat: challengingScore)
