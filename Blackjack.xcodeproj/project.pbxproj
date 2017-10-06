@@ -19,6 +19,7 @@
 		E2141C381F7ED001007C9854 /* PlayingCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2141C371F7ED001007C9854 /* PlayingCards.swift */; };
 		E2141C3A1F7EDD27007C9854 /* BlackjackBrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2141C391F7EDD27007C9854 /* BlackjackBrain.swift */; };
 		E27746861F819A11004D677D /* GameTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E27746851F819A11004D677D /* GameTableViewController.swift */; };
+		E2D626531F881795008A9D53 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D626521F881795008A9D53 /* UIImageViewExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		E2141C371F7ED001007C9854 /* PlayingCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingCards.swift; sourceTree = "<group>"; };
 		E2141C391F7EDD27007C9854 /* BlackjackBrain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackjackBrain.swift; sourceTree = "<group>"; };
 		E27746851F819A11004D677D /* GameTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTableViewController.swift; sourceTree = "<group>"; };
+		E2D626521F881795008A9D53 /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				CAB2FA5C1F81E33200CEBB86 /* BorderButton.swift */,
+				E2D626521F881795008A9D53 /* UIImageViewExtension.swift */,
 				CAB2FA581F81DE9700CEBB86 /* Instructions.storyboard */,
 			);
 			path = View;
@@ -195,6 +198,7 @@
 				E27746861F819A11004D677D /* GameTableViewController.swift in Sources */,
 				E2141C241F7ECF79007C9854 /* ViewController.swift in Sources */,
 				E2141C3A1F7EDD27007C9854 /* BlackjackBrain.swift in Sources */,
+				E2D626531F881795008A9D53 /* UIImageViewExtension.swift in Sources */,
 				E2141C381F7ED001007C9854 /* PlayingCards.swift in Sources */,
 				E2141C221F7ECF79007C9854 /* AppDelegate.swift in Sources */,
 				CAB2FA5D1F81E33300CEBB86 /* BorderButton.swift in Sources */,

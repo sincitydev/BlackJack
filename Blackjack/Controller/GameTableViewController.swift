@@ -155,8 +155,8 @@ class GameTableViewController: UIViewController {
         dealersCardViews.removeAll()
         
         // Create the playerCardViews
-        for card in playersHand {
-            let cardView = createCardView(forCard: card)
+        for _ in playersHand {
+            let cardView = getCardBacking()
             view.addSubview(cardView)
             playerCardViews.append(cardView)
         }
@@ -165,7 +165,7 @@ class GameTableViewController: UIViewController {
         for i in 0..<dealersHand.count {
             let cardView: UIImageView
             if i == 0 {
-                cardView = createCardView(forCard: dealersHand[0])
+                cardView = createCardView(forCard: dealersHand[i])
             } else {
                 cardView = getCardBacking()
             }
@@ -190,7 +190,7 @@ class GameTableViewController: UIViewController {
         blackjackGame.hitPlayer()
         updateValuesOfHands(revealDealer: false)
         
-        let cardView = createCardView(forCard: playersHand[playersHand.count - 1])
+        let cardView = getCardBacking()
         playerCardViews.append(cardView)
         self.view.addSubview(cardView)
         
@@ -215,12 +215,12 @@ class GameTableViewController: UIViewController {
             playersMoney -= playersBet
         } else {
             // reveals dealers cards
-            dealersCardViews[1].image = getUIImage(forCard: dealersHand[1])
+            dealersCardViews[1].flipRight(withNewImage: getUIImage(forCard: dealersHand[1])!)
             
             blackjackGame.dealerPlays(scoreToBeat: blackjackGame.getPlayerValue())
             
             for i in 2..<dealersHand.count {
-                dealersCardViews.append(createCardView(forCard: dealersHand[i]))
+                dealersCardViews.append(getCardBacking())
                 self.view.addSubview(dealersCardViews[i])
             }
             
@@ -357,10 +357,22 @@ extension GameTableViewController {
             for i in 0..<cardViews.count {
                 UIView.animate(withDuration: animationOffset, animations: {
                     cardViews[i].frame = CGRect(x: targetX, y: targetY, width: imageWidth, height: imageHeight)
-                
+                    
                     targetX += xOffset
                     animationOffset = animationOffset <= 0.35 ?
                         animationOffset + 0.05 : 0.35
+                }, completion: { (success) in
+                    if success {
+                        if forPlayer {
+                            if cardViews[i].image != self.getUIImage(forCard: self.playersHand[i]) {
+                                cardViews[i].flipLeft(withNewImage: self.getUIImage(forCard: self.playersHand[i])!)
+                            }
+                        } else {
+                            if i != 1 && cardViews[i].image != self.getUIImage(forCard: self.dealersHand[i]){
+                                cardViews[i].flipRight(withNewImage: self.getUIImage(forCard: self.dealersHand[i])!)
+                            }
+                        }
+                    }
                 })
             }
         } else {
