@@ -196,11 +196,7 @@ class GameTableViewController: UIViewController {
         
         hitAnimation(forPlayer: true, cardViews: playerCardViews)
         
-        if blackjackGame.didPlayerBust() {
-            clear(swipeRightGesture)
-        } else if blackjackGame.getPlayerValue() == 21 {
-            stand(doubleTapGesture)
-        } else if blackjackGame.getPlayerValue() == 21 {
+        if blackjackGame.didPlayerBust() || blackjackGame.getPlayerValue() == 21 {
             stand(doubleTapGesture)
         }
     }
